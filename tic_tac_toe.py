@@ -42,45 +42,63 @@ def get_available_moves(board):
 
 # Función Minimax
 def minimax(board, depth, maximizing_player):
+    # Si 'O' gana, devuelve 1 (máxima puntuación)
     if check_winner(board, 'O'):
         return 1
+    # Si 'X' gana, devuelve -1 (mínima puntuación)
     elif check_winner(board, 'X'):
         return -1
+    # Si el juego termina en empate, devuelve 0
     elif check_draw(board):
         return 0
-    
-    if maximizing_player:
-        max_eval = -math.inf
+
+    if maximizing_player:  # Si es el turno de maximizar el puntaje (jugador 'O')
+        max_eval = -math.inf  # Inicializa el puntaje máximo como negativo infinito
+        # Itera a través de los movimientos disponibles
         for move in get_available_moves(board):
             row, col = move
-            board[row][col] = 'O'
+            board[row][col] = 'O'  # Intenta realizar el movimiento para 'O'
+            # Llama recursivamente a minimax para evaluar el siguiente movimiento del oponente ('X')
             eval = minimax(board, depth + 1, False)
-            board[row][col] = ' '
-            max_eval = max(max_eval, eval)
-        return max_eval
-    else:
-        min_eval = math.inf
+            board[row][col] = ' '  # Deshace el movimiento para explorar otras posibilidades
+            max_eval = max(max_eval, eval)  # Actualiza el puntaje máximo encontrado
+        return max_eval  # Devuelve el puntaje máximo encontrado
+    else:  # Si es el turno de minimizar el puntaje (jugador 'X')
+        min_eval = math.inf  # Inicializa el puntaje mínimo como infinito
+        # Itera a través de los movimientos disponibles
         for move in get_available_moves(board):
             row, col = move
-            board[row][col] = 'X'
+            board[row][col] = 'X'  # Intenta realizar el movimiento para 'X'
+            # Llama recursivamente a minimax para evaluar el siguiente movimiento de la computadora ('O')
             eval = minimax(board, depth + 1, True)
-            board[row][col] = ' '
-            min_eval = min(min_eval, eval)
-        return min_eval
+            board[row][col] = ' '  # Deshace el movimiento para explorar otras posibilidades
+            min_eval = min(min_eval, eval)  # Actualiza el puntaje mínimo encontrado
+        return min_eval  # Devuelve el puntaje mínimo encontrado
 
 # Función para encontrar el mejor movimiento usando el algoritmo Minimax
 def find_best_move(board):
+    # Inicializa la variable para el mejor puntaje con un valor muy bajo
     best_eval = -math.inf
+    # Inicializa la variable para el mejor movimiento como None
     best_move = None
+    # Itera sobre todos los movimientos disponibles en el tablero
     for move in get_available_moves(board):
+        # Obtiene la fila y columna del movimiento actual
         row, col = move
+        # Realiza el movimiento en el tablero simulando que la computadora juega como 'O'
         board[row][col] = 'O'
+        # Calcula el puntaje usando el algoritmo Minimax para el movimiento actual
         eval = minimax(board, 0, False)
+        # Deshace el movimiento para explorar otras posibilidades
         board[row][col] = ' '
+        # Compara el puntaje obtenido con el mejor puntaje encontrado hasta ahora
         if eval > best_eval:
+            # Si el puntaje es mejor que el mejor puntaje actual, actualiza el mejor puntaje y el mejor movimiento
             best_eval = eval
             best_move = move
+    # Devuelve el mejor movimiento encontrado
     return best_move
+
 
 # Función principal del juego
 def play_game():
